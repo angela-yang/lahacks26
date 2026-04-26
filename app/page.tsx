@@ -77,6 +77,7 @@ export default function App() {
           allProjects={MOCK_PROJECTS}
           feedback={MOCK_FEEDBACK.filter((f) => f.projectId === selectedProject.id)}
           onSelectProject={setSelectedProject}
+          onBackToProjects={() => setSelectedProject(null)}
         />
       ) : (
         <ProjectsView projects={MOCK_PROJECTS} onSelectProject={setSelectedProject} />

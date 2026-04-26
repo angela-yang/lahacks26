@@ -9,14 +9,15 @@ interface Props {
   allProjects: Project[];
   feedback: Feedback[];
   onSelectProject: (p: Project) => void;
+  onBackToProjects: () => void;
 }
 
 const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending",
-  implementing: "Implementing",
-  testing: "Testing",
-  staged: "Staged",
-  done: "Done",
+  pending: "Not Started",
+  implementing: "Ongoing",
+  testing: "Ongoing",
+  staged: "Ongoing",
+  done: "Finished",
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -25,7 +26,13 @@ const PRIORITY_COLORS: Record<string, string> = {
   low: "priority-low",
 };
 
-export default function ProjectDetailView({ project, allProjects, feedback, onSelectProject }: Props) {
+export default function ProjectDetailView({
+  project,
+  allProjects,
+  feedback,
+  onSelectProject,
+  onBackToProjects,
+}: Props) {
   const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(feedback[0] ?? null);
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [mounted, setMounted] = useState(false);
@@ -38,9 +45,30 @@ export default function ProjectDetailView({ project, allProjects, feedback, onSe
     ? feedback
     : feedback.filter((f) => STATUS_LABELS[f.status] === statusFilter);
 
+  useEffect(() => {
+    setSelectedFeedback(feedback[0] ?? null);
+  }, [project.id, feedback]);
+
+  useEffect(() => {
+    if (!selectedFeedback) {
+      setSelectedFeedback(filtered[0] ?? null);
+      return;
+    }
+    const stillVisible = filtered.some((f) => f.id === selectedFeedback.id);
+    if (!stillVisible) {
+      setSelectedFeedback(filtered[0] ?? null);
+    }
+  }, [filtered, selectedFeedback]);
+
   return (
     <div className={`view detail-view ${mounted ? "mounted" : ""}`}>
       <Navbar />
+      <div className="detail-toolbar">
+        <button className="back-button" onClick={onBackToProjects}>
+          <BackIcon />
+          <span>Back to Projects</span>
+        </button>
+      </div>
       <div className="detail-layout">
         {/* Sidebar */}
         <aside className="sidebar">
@@ -73,7 +101,7 @@ export default function ProjectDetailView({ project, allProjects, feedback, onSe
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                   >
-                    {["All Status", "Pending", "Implementing", "Testing", "Staged", "Done"].map((s) => (
+                    {["All Status", "Not Started", "Ongoing", "Finished"].map((s) => (
                       <option key={s}>{s}</option>
                     ))}
                   </select>
@@ -90,6 +118,8 @@ export default function ProjectDetailView({ project, allProjects, feedback, onSe
                     className={`feedback-item ${selectedFeedback?.id === f.id ? "selected" : ""}`}
                     style={{ animationDelay: `${i * 70}ms` }}
                     onClick={() => setSelectedFeedback(f)}
+                    onMouseEnter={() => setSelectedFeedback(f)}
+                    onFocus={() => setSelectedFeedback(f)}
                   >
                     <div className="feedback-item-top">
                       <span className="feedback-item-title">{f.title}</span>
@@ -97,14 +127,13 @@ export default function ProjectDetailView({ project, allProjects, feedback, onSe
                     </div>
                     <div className="feedback-item-sub">
                       <span>From: {f.from}</span>
-                      <span>{f.estimatedTime}</span>
                     </div>
                     <p className="feedback-item-summary">{f.summary}</p>
                     <div className="feedback-item-footer">
                       <span className={`priority-badge ${PRIORITY_COLORS[f.priority]}`}>
                         {f.priority.charAt(0).toUpperCase() + f.priority.slice(1)} Priority
                       </span>
-                      <span className={`status-pill status-${f.status}`}>
+                      <span className={`status-pill stage-${f.status === "done" ? "finished" : f.status === "pending" ? "not-started" : "ongoing"}`}>
                         {STATUS_LABELS[f.status]}
                       </span>
                     </div>
@@ -128,15 +157,29 @@ export default function ProjectDetailView({ project, allProjects, feedback, onSe
   );
 }
 
-function FeedbackDetail({ feedback }: { feedback: Feedback }) {
-  const [status, setStatus] = useState(feedback.status);
+function BackIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M10.5 3.5L6 8l4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
-  const PIPELINE = ["pending", "implementing", "testing", "staged", "done"];
+function FeedbackDetail({ feedback }: { feedback: Feedback }) {
+  const toStage = (value: Feedback["status"]) =>
+    value === "done" ? "finished" : value === "pending" ? "not-started" : "ongoing";
+  const [status, setStatus] = useState<"not-started" | "ongoing" | "finished">(toStage(feedback.status));
+
+  const PIPELINE: Array<"not-started" | "ongoing" | "finished"> = ["not-started", "ongoing", "finished"];
   const currentIdx = PIPELINE.indexOf(status);
+
+  useEffect(() => {
+    setStatus(toStage(feedback.status));
+  }, [feedback]);
 
   const advance = () => {
     if (currentIdx < PIPELINE.length - 1) {
-      setStatus(PIPELINE[currentIdx + 1] as Feedback["status"]);
+      setStatus(PIPELINE[currentIdx + 1]);
     }
   };
 
@@ -177,14 +220,16 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
             {i < PIPELINE.length - 1 && (
               <div className={`pipeline-line ${i < currentIdx ? "filled" : ""}`} />
             )}
-            <span className="pipeline-label">{STATUS_LABELS[step]}</span>
+            <span className="pipeline-label">
+              {step === "not-started" ? "Not Started" : step === "ongoing" ? "Ongoing" : "Finished"}
+            </span>
           </div>
         ))}
       </div>
 
-      {status !== "done" && (
+      {status !== "finished" && (
         <button className="advance-btn" onClick={advance}>
-          Advance → {STATUS_LABELS[PIPELINE[currentIdx + 1]] ?? ""}
+          Advance → {PIPELINE[currentIdx + 1] === "not-started" ? "Not Started" : PIPELINE[currentIdx + 1] === "ongoing" ? "Ongoing" : "Finished"}
         </button>
       )}
 
@@ -195,10 +240,6 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
         <p>{feedback.content}</p>
       </div>
 
-      <div className="detail-section">
-        <h4>Estimated Implementation Time</h4>
-        <p>{feedback.estimatedTime}</p>
-      </div>
     </div>
   );
 }
