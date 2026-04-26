@@ -62,16 +62,14 @@ export default function ProjectDetailView({
 
   return (
     <div className={`view detail-view ${mounted ? "mounted" : ""}`}>
-      <Navbar />
-      <div className="detail-toolbar">
-        <button className="back-button" onClick={onBackToProjects}>
-          <BackIcon />
-          <span>Back to Projects</span>
-        </button>
-      </div>
+      <Navbar onHomeClick={onBackToProjects} />
       <div className="detail-layout">
         {/* Sidebar */}
         <aside className="sidebar">
+          <button className="back-button sidebar-back-button" onClick={onBackToProjects}>
+            <BackIcon />
+            <span>Back to Projects</span>
+          </button>
           {allProjects.map((p, i) => (
             <button
               key={p.id}
