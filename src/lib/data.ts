@@ -1,6 +1,9 @@
+import type { ObjectId } from "mongodb";
+
 export type Priority = "high" | "medium" | "low";
 export type FeedbackStatus =
   | "queued"
+  | "leased"
   | "implementing"
   | "testing"
   | "staging"
@@ -27,6 +30,53 @@ export interface Feedback {
   estimatedTime: string;
   project: string;
   logs?: string[];
+  isLeased?: boolean;
+  claimedBy?: string;
+}
+
+// --- DB document shapes ---
+
+export interface DbClient {
+  _id?: ObjectId;
+  userId: string;
+  projectName: string;
+  githubRepo: string;
+  clientEmail: string;
+  // Backward-compatible field for older Mongo indexes/docs.
+  email?: string;
+  branch: string;
+  createdAt: Date;
+}
+
+export interface DbTask {
+  _id?: ObjectId;
+  project_id: ObjectId | string;
+  title?: string;
+  subject?: string;
+  summary?: string;
+  content?: string;
+  raw_text?: string;
+  from?: string;
+  sender?: string;
+  sender_email?: string;
+  receivedAt?: Date | string;
+  received_at?: Date | string;
+  priority?: Priority;
+  urgency?: Priority | string;
+  status?: FeedbackStatus | string;
+  claimed_by: string | null;
+  estimatedTime?: string;
+  extracted_requirements?: string[];
+  handoff_instructions?: string;
+  created_at?: Date | string;
+  logs?: string[];
+}
+
+export interface DbAuditLog {
+  _id?: ObjectId;
+  task_id: ObjectId;
+  message: string;
+  timestamp: Date;
 }
 
 export interface Project {

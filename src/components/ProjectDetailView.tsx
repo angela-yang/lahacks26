@@ -15,6 +15,7 @@ interface Props {
 
 const STATUS_LABELS: Record<FeedbackStatus, string> = {
   queued: "Not Started",
+  leased: "Ongoing",
   implementing: "Ongoing",
   testing: "Ongoing",
   staging: "Ongoing",
@@ -145,9 +146,15 @@ export default function ProjectDetailView({
                           f.priority.slice(1)}{" "}
                         Priority
                       </span>
-                      <span className={statusPillStageClass(f.status)}>
-                        {STATUS_LABELS[f.status]}
-                      </span>
+                      {f.isLeased ? (
+                        <span className="status-pill stage-leased">
+                          Leased · {f.claimedBy ?? "agent"}
+                        </span>
+                      ) : (
+                        <span className={statusPillStageClass(f.status)}>
+                          {STATUS_LABELS[f.status]}
+                        </span>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -274,8 +281,22 @@ function FeedbackDetail({
         ))}
       </div>
 
+      {feedback.isLeased && (
+        <div className="leased-banner">
+          <span className="status-pill stage-leased">
+            Leased · {feedback.claimedBy ?? "agent"}
+          </span>
+          <span>currently working on this task</span>
+        </div>
+      )}
+
       {status !== "finished" && (
-        <button className="advance-btn" onClick={advance}>
+        <button
+          className="advance-btn"
+          onClick={advance}
+          disabled={feedback.isLeased}
+          title={feedback.isLeased ? "Task is leased to an agent" : undefined}
+        >
           Advance →{" "}
           {PIPELINE[currentIdx + 1] === "not-started"
             ? "Not Started"

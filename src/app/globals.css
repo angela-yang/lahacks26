@@ -927,6 +927,29 @@ textarea {
   color: var(--green);
   border-color: var(--green-border);
 }
+.status-pill.stage-leased {
+  color: #f5a623;
+  border-color: rgba(245, 166, 35, 0.35);
+  background: rgba(245, 166, 35, 0.08);
+}
+
+.leased-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(245, 166, 35, 0.07);
+  border: 1px solid rgba(245, 166, 35, 0.22);
+  font-size: 0.85rem;
+  color: rgba(245, 166, 35, 0.85);
+  margin-bottom: 6px;
+}
+
+.advance-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
 
 /* ─── Detail Panel ─── */
 .detail-panel {

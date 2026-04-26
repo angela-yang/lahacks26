@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
+import { registerProject } from "@/app/actions/projects";
 import {
-  MOCK_PROJECTS,
   type GitHubRepo,
   type Project,
 } from "@/lib/data";
@@ -207,7 +207,7 @@ function getAdaptiveTextSize(text: string, base: number, min: number) {
 }
 
 export default function DashboardPage() {
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [clientEmail, setClientEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -276,31 +276,41 @@ export default function DashboardPage() {
   useEffect(() => {
     let isActive = true;
 
-    async function loadGitHubRepos() {
+    async function loadData() {
       try {
         setGithubReposLoading(true);
         setGithubReposError(null);
 
-        const response = await fetch("/api/github/repos", {
-          cache: "no-store",
-        });
+        const [reposResponse, projectsResponse] = await Promise.all([
+          fetch("/api/github/repos", { cache: "no-store" }),
+          fetch("/api/projects", { cache: "no-store" }),
+        ]);
 
-        const payload = (await response.json()) as {
+        const reposPayload = (await reposResponse.json()) as {
           repositories?: GitHubRepo[];
           error?: string;
         };
 
-        if (!response.ok) {
+        if (!reposResponse.ok) {
           throw new Error(
-            payload.error ?? "Failed to load GitHub repositories.",
+            reposPayload.error ?? "Failed to load GitHub repositories.",
           );
         }
 
         if (!isActive) return;
 
-        const repos = payload.repositories ?? [];
+        const repos = reposPayload.repositories ?? [];
         setGithubRepos(repos);
         setSelectedRepoFullName((current) => current || repos[0]?.fullName || "");
+
+        if (projectsResponse.ok) {
+          const projectsPayload = (await projectsResponse.json()) as {
+            projects?: Project[];
+          };
+          if (isActive) {
+            setProjects(projectsPayload.projects ?? []);
+          }
+        }
       } catch (error) {
         if (!isActive) return;
 
@@ -318,7 +328,7 @@ export default function DashboardPage() {
       }
     }
 
-    void loadGitHubRepos();
+    void loadData();
 
     return () => {
       isActive = false;
@@ -353,16 +363,21 @@ export default function DashboardPage() {
 
   const closeCreateModal = () => setIsCreateModalOpen(false);
 
-  const handleCreateProject = (event: FormEvent<HTMLFormElement>) => {
+  const handleCreateProject = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!selectedRepo) return;
 
-    const project: Project = {
-      id: createProjectId(),
-      name: formatProjectName(selectedRepo),
+    const projectName = formatProjectName(selectedRepo);
+    const email = clientEmail.trim();
+
+    // Optimistic update with a temp id; replaced when server action resolves
+    const tempId = createProjectId();
+    const optimisticProject: Project = {
+      id: tempId,
+      name: projectName,
       branch: "main",
-      email: clientEmail.trim(),
+      email,
       githubRepo: selectedRepo.fullName,
       status: "active",
       feedbackCount: 0,
@@ -370,10 +385,15 @@ export default function DashboardPage() {
       tech: [],
     };
 
-    setProjects((current) => [project, ...current]);
+    setProjects((current) => [optimisticProject, ...current]);
     setIsCreateModalOpen(false);
     setClientEmail("");
     setSelectedRepoFullName(githubRepos[0]?.fullName ?? "");
+
+    const realId = await registerProject(selectedRepo.fullName, email, projectName);
+    setProjects((current) =>
+      current.map((p) => (p.id === tempId ? { ...p, id: realId } : p)),
+    );
   };
 
   return (
