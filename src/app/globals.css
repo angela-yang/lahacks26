@@ -1,7 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&display=swap");
 
 /* ─── Reset & Tokens ─── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   /* Dark neutral glass — accents stay muted */
@@ -35,13 +41,14 @@
   --tab-size: 18px;
   --radius-card: 18px;
   --radius-sm: 10px;
-  --font: 'Albert Sans', sans-serif;
-  --font-mono: 'Albert Sans', sans-serif;
+  --font: "Albert Sans", sans-serif;
+  --font-mono: "Albert Sans", sans-serif;
   --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
   --spring: 420ms cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
-html, body {
+html,
+body {
   min-height: 100%;
   background: var(--bg);
   color: var(--text-primary);
@@ -73,11 +80,31 @@ textarea {
       rgba(88, 65, 155, 0.08) 62%,
       transparent 82%
     ),
-    radial-gradient(ellipse 105% 52% at 50% -14%, rgba(105, 78, 175, 0.11), transparent 58%),
-    radial-gradient(ellipse 40% 36% at 92% 12%, rgba(70, 75, 95, 0.12), transparent 50%),
-    radial-gradient(ellipse 38% 32% at 4% 55%, rgba(45, 48, 58, 0.18), transparent 48%),
-    radial-gradient(ellipse 100% 95% at 50% 48%, rgba(42, 28, 72, 0.45), transparent 68%),
-    radial-gradient(ellipse 55% 40% at 50% 102%, rgba(0, 0, 0, 0.38), transparent 52%);
+    radial-gradient(
+      ellipse 105% 52% at 50% -14%,
+      rgba(105, 78, 175, 0.11),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 40% 36% at 92% 12%,
+      rgba(70, 75, 95, 0.12),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 38% 32% at 4% 55%,
+      rgba(45, 48, 58, 0.18),
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse 100% 95% at 50% 48%,
+      rgba(42, 28, 72, 0.45),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 50% 102%,
+      rgba(0, 0, 0, 0.38),
+      transparent 52%
+    );
 }
 
 .bg-grid {
@@ -90,7 +117,11 @@ textarea {
     linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
   background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse 85% 70% at 50% 40%, black 20%, transparent 75%);
+  mask-image: radial-gradient(
+    ellipse 85% 70% at 50% 40%,
+    black 20%,
+    transparent 75%
+  );
 }
 
 .bg-noise {
@@ -128,7 +159,9 @@ textarea {
   border: none;
   font-family: var(--font);
   cursor: pointer;
-  transition: color var(--transition), opacity var(--transition);
+  transition:
+    color var(--transition),
+    opacity var(--transition);
 }
 
 .navbar-logo:hover {
@@ -146,7 +179,10 @@ textarea {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), color var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    color var(--transition);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -199,7 +235,9 @@ textarea {
   color: var(--text-primary);
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 400ms ease, transform 400ms ease;
+  transition:
+    opacity 400ms ease,
+    transform 400ms ease;
 }
 
 .mounted .section-title {
@@ -214,10 +252,14 @@ textarea {
 }
 
 @media (max-width: 900px) {
-  .projects-grid { grid-template-columns: repeat(2, 1fr); }
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 600px) {
-  .projects-grid { grid-template-columns: 1fr; }
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ─── Project Card (legacy grid — glass slab, minimal) ─── */
@@ -229,7 +271,11 @@ textarea {
   cursor: pointer;
   text-align: left;
   position: relative;
-  transition: border-color var(--transition), background var(--transition), transform var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
   overflow: visible;
   opacity: 1;
   transform: translateY(0);
@@ -245,8 +291,14 @@ textarea {
 }
 
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .project-card:hover {
@@ -259,19 +311,35 @@ textarea {
 }
 
 .projects-grid .project-card:nth-child(4n + 1) {
-  background: linear-gradient(155deg, rgba(42, 44, 52, 0.45) 0%, rgba(10, 10, 14, 0.55) 100%);
+  background: linear-gradient(
+    155deg,
+    rgba(42, 44, 52, 0.45) 0%,
+    rgba(10, 10, 14, 0.55) 100%
+  );
 }
 
 .projects-grid .project-card:nth-child(4n + 2) {
-  background: linear-gradient(155deg, rgba(38, 40, 50, 0.42) 0%, rgba(10, 10, 14, 0.52) 100%);
+  background: linear-gradient(
+    155deg,
+    rgba(38, 40, 50, 0.42) 0%,
+    rgba(10, 10, 14, 0.52) 100%
+  );
 }
 
 .projects-grid .project-card:nth-child(4n + 3) {
-  background: linear-gradient(155deg, rgba(36, 38, 48, 0.44) 0%, rgba(10, 10, 14, 0.54) 100%);
+  background: linear-gradient(
+    155deg,
+    rgba(36, 38, 48, 0.44) 0%,
+    rgba(10, 10, 14, 0.54) 100%
+  );
 }
 
 .projects-grid .project-card:nth-child(4n + 4) {
-  background: linear-gradient(155deg, rgba(44, 42, 50, 0.4) 0%, rgba(10, 10, 14, 0.5) 100%);
+  background: linear-gradient(
+    155deg,
+    rgba(44, 42, 50, 0.4) 0%,
+    rgba(10, 10, 14, 0.5) 100%
+  );
 }
 
 .project-card.inactive {
@@ -370,8 +438,15 @@ textarea {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(0.85); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
 }
 
 /* Add card */
@@ -530,7 +605,7 @@ textarea {
 
 /* Top edge of “folder” to the right of the tab */
 .sidebar-project span::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: var(--sidebar-tab-w);
@@ -582,7 +657,9 @@ textarea {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition);
   margin-bottom: 12px;
 }
 
@@ -610,7 +687,9 @@ textarea {
   box-shadow: none;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 350ms ease 100ms, transform 350ms ease 100ms;
+  transition:
+    opacity 350ms ease 100ms,
+    transform 350ms ease 100ms;
 }
 
 .mounted .detail-title {
@@ -685,7 +764,8 @@ textarea {
   padding-right: 28px;
 }
 
-.status-select:hover, .status-select:focus {
+.status-select:hover,
+.status-select:focus {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -711,7 +791,10 @@ textarea {
   font-size: 1rem;
   color: var(--text-primary);
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    box-shadow var(--transition);
   opacity: 0;
 }
 
@@ -806,9 +889,18 @@ textarea {
   padding: 4px 10px;
 }
 
-.status-pill.stage-not-started { color: #cfd4ff; border-color: rgba(207, 212, 255, 0.35); }
-.status-pill.stage-ongoing { color: var(--amber); border-color: rgba(245, 183, 92, 0.28); }
-.status-pill.stage-finished { color: var(--green); border-color: var(--green-border); }
+.status-pill.stage-not-started {
+  color: #cfd4ff;
+  border-color: rgba(207, 212, 255, 0.35);
+}
+.status-pill.stage-ongoing {
+  color: var(--amber);
+  border-color: rgba(245, 183, 92, 0.28);
+}
+.status-pill.stage-finished {
+  color: var(--green);
+  border-color: var(--green-border);
+}
 
 /* ─── Detail Panel ─── */
 .detail-panel {
@@ -958,7 +1050,9 @@ textarea {
   font-weight: 500;
   padding: 10px 16px;
   cursor: pointer;
-  transition: border-color var(--transition), background var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition);
   margin-bottom: 4px;
 }
 

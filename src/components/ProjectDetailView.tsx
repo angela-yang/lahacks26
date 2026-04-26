@@ -21,7 +21,9 @@ const STATUS_LABELS: Record<FeedbackStatus, string> = {
   rejected: "Rejected",
 };
 
-function feedbackToUiStage(status: FeedbackStatus): "not-started" | "ongoing" | "finished" {
+function feedbackToUiStage(
+  status: FeedbackStatus,
+): "not-started" | "ongoing" | "finished" {
   if (status === "deployed") return "finished";
   if (status === "queued" || status === "rejected") return "not-started";
   return "ongoing";
@@ -29,7 +31,12 @@ function feedbackToUiStage(status: FeedbackStatus): "not-started" | "ongoing" | 
 
 function statusPillStageClass(status: FeedbackStatus): string {
   const s = feedbackToUiStage(status);
-  const slug = s === "finished" ? "finished" : s === "not-started" ? "not-started" : "ongoing";
+  const slug =
+    s === "finished"
+      ? "finished"
+      : s === "not-started"
+        ? "not-started"
+        : "ongoing";
   return `status-pill stage-${slug}`;
 }
 
@@ -46,7 +53,9 @@ export default function ProjectDetailView({
   onSelectProject,
   onBackToProjects,
 }: Props) {
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(feedback[0] ?? null);
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(
+    feedback[0] ?? null,
+  );
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [mounted, setMounted] = useState(false);
 
@@ -54,9 +63,10 @@ export default function ProjectDetailView({
     setMounted(true);
   }, []);
 
-  const filtered = statusFilter === "All Status"
-    ? feedback
-    : feedback.filter((f) => STATUS_LABELS[f.status] === statusFilter);
+  const filtered =
+    statusFilter === "All Status"
+      ? feedback
+      : feedback.filter((f) => STATUS_LABELS[f.status] === statusFilter);
 
   useEffect(() => {
     setSelectedFeedback(feedback[0] ?? null);
@@ -79,7 +89,10 @@ export default function ProjectDetailView({
       <div className="detail-layout">
         {/* Sidebar */}
         <aside className="sidebar">
-          <button className="back-button sidebar-back-button" onClick={onBackToProjects}>
+          <button
+            className="back-button sidebar-back-button"
+            onClick={onBackToProjects}
+          >
             <BackIcon />
             <span>Back to Projects</span>
           </button>
@@ -112,9 +125,11 @@ export default function ProjectDetailView({
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                   >
-                    {["All Status", "Not Started", "Ongoing", "Finished"].map((s) => (
-                      <option key={s}>{s}</option>
-                    ))}
+                    {["All Status", "Not Started", "Ongoing", "Finished"].map(
+                      (s) => (
+                        <option key={s}>{s}</option>
+                      ),
+                    )}
                   </select>
                 </div>
               </div>
@@ -139,8 +154,12 @@ export default function ProjectDetailView({
                     </div>
                     <p className="feedback-item-summary">{f.summary}</p>
                     <div className="feedback-item-footer">
-                      <span className={`priority-badge ${PRIORITY_COLORS[f.priority]}`}>
-                        {f.priority.charAt(0).toUpperCase() + f.priority.slice(1)} Priority
+                      <span
+                        className={`priority-badge ${PRIORITY_COLORS[f.priority]}`}
+                      >
+                        {f.priority.charAt(0).toUpperCase() +
+                          f.priority.slice(1)}{" "}
+                        Priority
                       </span>
                       <span className={statusPillStageClass(f.status)}>
                         {STATUS_LABELS[f.status]}
@@ -168,18 +187,34 @@ export default function ProjectDetailView({
 
 function BackIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M10.5 3.5L6 8l4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M10.5 3.5L6 8l4.5 4.5"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 function FeedbackDetail({ feedback }: { feedback: Feedback }) {
   const [status, setStatus] = useState<"not-started" | "ongoing" | "finished">(
-    feedbackToUiStage(feedback.status)
+    feedbackToUiStage(feedback.status),
   );
 
-  const PIPELINE: Array<"not-started" | "ongoing" | "finished"> = ["not-started", "ongoing", "finished"];
+  const PIPELINE: Array<"not-started" | "ongoing" | "finished"> = [
+    "not-started",
+    "ongoing",
+    "finished",
+  ];
   const currentIdx = PIPELINE.indexOf(status);
 
   useEffect(() => {
@@ -196,8 +231,12 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
     <div className="feedback-detail-inner">
       <div className="feedback-detail-header">
         <h3 className="feedback-detail-title">{feedback.title}</h3>
-        <span className={`priority-badge ${PRIORITY_COLORS[feedback.priority]}`}>
-          {feedback.priority.charAt(0).toUpperCase() + feedback.priority.slice(1)} Priority
+        <span
+          className={`priority-badge ${PRIORITY_COLORS[feedback.priority]}`}
+        >
+          {feedback.priority.charAt(0).toUpperCase() +
+            feedback.priority.slice(1)}{" "}
+          Priority
         </span>
       </div>
 
@@ -221,16 +260,25 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
       {/* Pipeline */}
       <div className="pipeline">
         {PIPELINE.map((step, i) => (
-          <div key={step} className={`pipeline-step ${i <= currentIdx ? "done" : ""} ${i === currentIdx ? "current" : ""}`}>
+          <div
+            key={step}
+            className={`pipeline-step ${i <= currentIdx ? "done" : ""} ${i === currentIdx ? "current" : ""}`}
+          >
             <div className="pipeline-dot">
               {i < currentIdx && <CheckIcon />}
               {i === currentIdx && <div className="pipeline-pulse" />}
             </div>
             {i < PIPELINE.length - 1 && (
-              <div className={`pipeline-line ${i < currentIdx ? "filled" : ""}`} />
+              <div
+                className={`pipeline-line ${i < currentIdx ? "filled" : ""}`}
+              />
             )}
             <span className="pipeline-label">
-              {step === "not-started" ? "Not Started" : step === "ongoing" ? "Ongoing" : "Finished"}
+              {step === "not-started"
+                ? "Not Started"
+                : step === "ongoing"
+                  ? "Ongoing"
+                  : "Finished"}
             </span>
           </div>
         ))}
@@ -238,7 +286,12 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
 
       {status !== "finished" && (
         <button className="advance-btn" onClick={advance}>
-          Advance → {PIPELINE[currentIdx + 1] === "not-started" ? "Not Started" : PIPELINE[currentIdx + 1] === "ongoing" ? "Ongoing" : "Finished"}
+          Advance →{" "}
+          {PIPELINE[currentIdx + 1] === "not-started"
+            ? "Not Started"
+            : PIPELINE[currentIdx + 1] === "ongoing"
+              ? "Ongoing"
+              : "Finished"}
         </button>
       )}
 
@@ -248,7 +301,6 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
         <h4>Feedback Content</h4>
         <p>{feedback.content}</p>
       </div>
-
     </div>
   );
 }
@@ -256,7 +308,12 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
 function FilterIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-      <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path
+        d="M2 4h12M4 8h8M6 12h4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -264,8 +321,22 @@ function FilterIcon() {
 function MailIconSm() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-      <rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" opacity="0.6"/>
-      <path d="M2 5.5l6 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <rect
+        x="2"
+        y="4"
+        width="12"
+        height="9"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
+      <path
+        d="M2 5.5l6 4 6-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -273,8 +344,22 @@ function MailIconSm() {
 function CalendarIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-      <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" opacity="0.6"/>
-      <path d="M2 7h12M6 2v2M10 2v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <rect
+        x="2"
+        y="3"
+        width="12"
+        height="11"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
+      <path
+        d="M2 7h12M6 2v2M10 2v2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -282,7 +367,14 @@ function CalendarIcon() {
 function CodeIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-      <path d="M5 6L2 8l3 2M11 6l3 2-3 2M9 4l-2 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
+      <path
+        d="M5 6L2 8l3 2M11 6l3 2-3 2M9 4l-2 8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.6"
+      />
     </svg>
   );
 }
@@ -290,7 +382,13 @@ function CodeIcon() {
 function CheckIcon() {
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <path d="M2 5l2.5 2.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path
+        d="M2 5l2.5 2.5L8 3"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

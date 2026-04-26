@@ -71,9 +71,23 @@ export default function ProjectsView({ projects, onSelectProject }: Props) {
 function BranchIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-      <path d="M5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a4 4 0 0 0-3.9 3.1A1 1 0 0 0 2 14h6a1 1 0 0 0 .9-1.9A4 4 0 0 0 5 9zm6-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" fill="currentColor" opacity="0.6"/>
-      <path d="M11 7v2M5 7v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-      <path d="M11 9a2 2 0 0 1-2 2H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path
+        d="M5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a4 4 0 0 0-3.9 3.1A1 1 0 0 0 2 14h6a1 1 0 0 0 .9-1.9A4 4 0 0 0 5 9zm6-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+        fill="currentColor"
+        opacity="0.6"
+      />
+      <path
+        d="M11 7v2M5 7v.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11 9a2 2 0 0 1-2 2H8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -81,8 +95,22 @@ function BranchIcon() {
 function MailIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-      <rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" opacity="0.6"/>
-      <path d="M2 5.5l6 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <rect
+        x="2"
+        y="4"
+        width="12"
+        height="9"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
+      <path
+        d="M2 5.5l6 4 6-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

@@ -107,7 +107,7 @@
 
 /* Top edge of folder body (right of tab only) — one continuous line with side borders */
 .folderBody::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: var(--folder-tab-w);

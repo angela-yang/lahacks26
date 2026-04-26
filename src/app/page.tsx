@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import Navbar from './components/Navbar'
-import ProjectDetailView from './components/ProjectDetailView'
-import { MOCK_FEEDBACK, MOCK_PROJECTS, type Project } from './lib/data'
-import styles from './page.module.css'
+import { useMemo, useState } from "react";
+import Navbar from "@/components/Navbar";
+import ProjectDetailView from "@/components/ProjectDetailView";
+import { MOCK_FEEDBACK, MOCK_PROJECTS, type Project } from "../lib/data";
+import styles from "./page.module.css";
 
-const STATUS_LABEL: Record<Project['status'], string> = {
-  active: 'Active',
-  inactive: 'Inactive',
-  paused: 'Paused',
-}
+const STATUS_LABEL: Record<Project["status"], string> = {
+  active: "Active",
+  inactive: "Inactive",
+  paused: "Paused",
+};
 
-function StatusBadge({ status }: { status: Project['status'] }) {
+function StatusBadge({ status }: { status: Project["status"] }) {
   return (
     <span className={`${styles.badge} ${styles[status]}`}>
-      {status === 'active' && <span className={styles.badgeDot} />}
+      {status === "active" && <span className={styles.badgeDot} />}
       {STATUS_LABEL[status]}
     </span>
-  )
+  );
 }
 
 function ProjectCard({
@@ -26,14 +26,14 @@ function ProjectCard({
   index,
   onOpen,
 }: {
-  project: Project
-  index: number
-  onOpen: (p: Project) => void
+  project: Project;
+  index: number;
+  onOpen: (p: Project) => void;
 }) {
   return (
     <button
       type="button"
-      className={`${styles.folderWrap} ${project.status === 'inactive' ? styles.dimmed : ''}`}
+      className={`${styles.folderWrap} ${project.status === "inactive" ? styles.dimmed : ""}`}
       style={{ animationDelay: `${index * 60}ms` }}
       onClick={() => onOpen(project)}
     >
@@ -63,7 +63,7 @@ function ProjectCard({
         )}
       </div>
     </button>
-  )
+  );
 }
 
 function BranchIcon() {
@@ -74,28 +74,52 @@ function BranchIcon() {
         fill="currentColor"
         opacity="0.6"
       />
-      <path d="M11 7v2M5 7v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M11 9a2 2 0 0 1-2 2H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M11 7v2M5 7v.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11 9a2 2 0 0 1-2 2H8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
-  )
+  );
 }
 
 function MailIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-      <path d="M2 5.5l6 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <rect
+        x="2"
+        y="4"
+        width="12"
+        height="9"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
+      <path
+        d="M2 5.5l6 4 6-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
-  )
+  );
 }
 
 export default function ProjectsPage() {
-  const [selected, setSelected] = useState<Project | null>(null)
+  const [selected, setSelected] = useState<Project | null>(null);
 
   const feedbackForProject = useMemo(() => {
-    if (!selected) return []
-    return MOCK_FEEDBACK.filter((f) => f.project === selected.name)
-  }, [selected])
+    if (!selected) return [];
+    return MOCK_FEEDBACK.filter((f) => f.project === selected.name);
+  }, [selected]);
 
   if (selected) {
     return (
@@ -106,7 +130,7 @@ export default function ProjectsPage() {
         onSelectProject={setSelected}
         onBackToProjects={() => setSelected(null)}
       />
-    )
+    );
   }
 
   return (
@@ -118,7 +142,12 @@ export default function ProjectsPage() {
 
           <div className={styles.grid}>
             {MOCK_PROJECTS.map((p, i) => (
-              <ProjectCard key={p.id} project={p} index={i} onOpen={setSelected} />
+              <ProjectCard
+                key={p.id}
+                project={p}
+                index={i}
+                onOpen={setSelected}
+              />
             ))}
             <button
               type="button"
@@ -128,8 +157,19 @@ export default function ProjectsPage() {
               <span className={styles.folderTab} aria-hidden />
               <div className={`${styles.folderBody} ${styles.addFolderBody}`}>
                 <div className={styles.addIcon}>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-                    <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden
+                  >
+                    <path
+                      d="M10 4v12M4 10h12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </div>
                 <span>New Project</span>
@@ -139,5 +179,5 @@ export default function ProjectsPage() {
         </div>
       </main>
     </>
-  )
+  );
 }
