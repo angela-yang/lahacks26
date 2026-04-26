@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Navbar from "./Navbar";
 import type { Project, Feedback, FeedbackStatus } from "../lib/data";
@@ -8,8 +10,6 @@ interface Props {
   project: Project;
   allProjects: Project[];
   feedback: Feedback[];
-  onSelectProject: (p: Project) => void;
-  onBackToProjects: () => void;
 }
 
 const STATUS_LABELS: Record<FeedbackStatus, string> = {
@@ -50,9 +50,8 @@ export default function ProjectDetailView({
   project,
   allProjects,
   feedback,
-  onSelectProject,
-  onBackToProjects,
 }: Props) {
+  const router = useRouter();
   const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(
     feedback[0]?.id ?? null,
   );
@@ -68,27 +67,27 @@ export default function ProjectDetailView({
 
   return (
     <div className="view detail-view mounted">
-      <Navbar onHomeClick={onBackToProjects} />
+      <Navbar onHomeClick={() => router.push("/dashboard")} />
       <div className="detail-layout">
         {/* Sidebar */}
         <aside className="sidebar">
-          <button
+          <Link
+            href="/dashboard"
             className="back-button sidebar-back-button"
-            onClick={onBackToProjects}
           >
             <BackIcon />
             <span>Back</span>
-          </button>
+          </Link>
           {allProjects.map((p, i) => (
-            <button
+            <Link
+              href={`/projects/${p.id}`}
               key={p.id}
               className={`sidebar-project ${p.id === project.id ? "active" : ""}`}
               style={{ animationDelay: `${i * 60}ms` }}
-              onClick={() => onSelectProject(p)}
             >
               <div className="sidebar-tab" aria-hidden="true" />
               <span>{p.name}</span>
-            </button>
+            </Link>
           ))}
         </aside>
 

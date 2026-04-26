@@ -542,6 +542,7 @@ textarea {
   background: transparent;
   border: none;
   padding: 0;
+  text-decoration: none;
   font-family: var(--font);
   font-size: 17px;
   font-weight: 500;
@@ -671,6 +672,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
   background: rgba(98, 88, 138, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(235, 232, 255, 0.9);

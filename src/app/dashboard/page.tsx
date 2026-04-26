@@ -1,10 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
-import ProjectDetailView from "@/components/ProjectDetailView";
 import {
-  MOCK_FEEDBACK,
   MOCK_PROJECTS,
   type GitHubRepo,
   type Project,
@@ -29,11 +28,11 @@ function StatusBadge({ status }: { status: Project["status"] }) {
 function ProjectCard({
   project,
   index,
-  onOpen,
+  href,
 }: {
   project: Project;
   index: number;
-  onOpen: (p: Project) => void;
+  href: string;
 }) {
   const nameSize = getAdaptiveTextSize(project.name, 1.15, 0.93);
   const branchSize = getAdaptiveTextSize(project.branch, 0.98, 0.82);
@@ -41,11 +40,10 @@ function ProjectCard({
   const repoSize = getAdaptiveTextSize(project.githubRepo, 0.98, 0.8);
 
   return (
-    <button
-      type="button"
+    <Link
+      href={href}
       className={`${styles.folderWrap} ${project.status === "inactive" ? styles.dimmed : ""}`}
       style={{ animationDelay: `${index * 60}ms` }}
-      onClick={() => onOpen(project)}
     >
       <span className={styles.folderTab} aria-hidden />
       <div className={styles.folderBody}>
@@ -84,7 +82,7 @@ function ProjectCard({
           </div>
         )}
       </div>
-    </button>
+    </Link>
   );
 }
 
@@ -210,7 +208,6 @@ function getAdaptiveTextSize(text: string, base: number, min: number) {
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [selected, setSelected] = useState<Project | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [clientEmail, setClientEmail] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -379,23 +376,6 @@ export default function DashboardPage() {
     setSelectedRepoFullName(githubRepos[0]?.fullName ?? "");
   };
 
-  const feedbackForProject = useMemo(() => {
-    if (!selected) return [];
-    return MOCK_FEEDBACK.filter((f) => f.project === selected.name);
-  }, [selected]);
-
-  if (selected) {
-    return (
-      <ProjectDetailView
-        project={selected}
-        allProjects={projects}
-        feedback={feedbackForProject}
-        onSelectProject={setSelected}
-        onBackToProjects={() => setSelected(null)}
-      />
-    );
-  }
-
   return (
     <>
       <Navbar />
@@ -449,7 +429,7 @@ export default function DashboardPage() {
                   key={p.id}
                   project={p}
                   index={i}
-                  onOpen={setSelected}
+                  href={`/projects/${p.id}`}
                 />
               ))
             ) : (
