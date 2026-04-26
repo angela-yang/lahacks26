@@ -1,87 +1,137 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import ProjectsView from "./components/ProjectsView";
-import ProjectDetailView from "./components/ProjectDetailView";
+import { useMemo, useState } from 'react'
+import Navbar from './components/Navbar'
+import ProjectDetailView from './components/ProjectDetailView'
+import { MOCK_FEEDBACK, MOCK_PROJECTS, type Project } from './lib/data'
+import styles from './page.module.css'
 
-export type Project = {
-  id: string;
-  name: string;
-  branch: string;
-  email: string;
-  status: "active" | "inactive";
-  feedbackCount: number;
-};
+const STATUS_LABEL: Record<Project['status'], string> = {
+  active: 'Active',
+  inactive: 'Inactive',
+  paused: 'Paused',
+}
 
-export type Feedback = {
-  id: string;
-  projectId: string;
-  title: string;
-  from: string;
-  receivedAt: string;
-  priority: "high" | "low" | "medium";
-  estimatedTime: string;
-  content: string;
-  summary: string;
-  status: "pending" | "implementing" | "testing" | "staged" | "done";
-};
+function StatusBadge({ status }: { status: Project['status'] }) {
+  return (
+    <span className={`${styles.badge} ${styles[status]}`}>
+      {status === 'active' && <span className={styles.badgeDot} />}
+      {STATUS_LABEL[status]}
+    </span>
+  )
+}
 
-const MOCK_PROJECTS: Project[] = [
-  { id: "p1", name: "Project 1", branch: "main", email: "example@gmail.com", status: "active", feedbackCount: 3 },
-  { id: "p2", name: "Project 2", branch: "main", email: "example@gmail.com", status: "active", feedbackCount: 1 },
-  { id: "p3", name: "Project 3", branch: "main", email: "example@gmail.com", status: "active", feedbackCount: 5 },
-  { id: "p4", name: "Project 4", branch: "main", email: "example@gmail.com", status: "inactive", feedbackCount: 0 },
-];
+function ProjectCard({
+  project,
+  index,
+  onOpen,
+}: {
+  project: Project
+  index: number
+  onOpen: (p: Project) => void
+}) {
+  return (
+    <button
+      type="button"
+      className={`${styles.card} ${project.status === 'inactive' ? styles.dimmed : ''}`}
+      style={{ animationDelay: `${index * 60}ms` }}
+      onClick={() => onOpen(project)}
+    >
+      <div className={styles.cardHeader}>
+        <h3 className={styles.cardName}>{project.name}</h3>
+        <StatusBadge status={project.status} />
+      </div>
 
-const MOCK_FEEDBACK: Feedback[] = [
-  {
-    id: "f1", projectId: "p1", title: "Feedback lalalla", from: "example@gmail.com",
-    receivedAt: "2026-04-25 10:30 AM", priority: "high", estimatedTime: "2–4 hours",
-    content: "Lalallalallala here is some feedback that I want improved pls",
-    summary: "Lalallalallala here is a feedback summary yay", status: "pending",
-  },
-  {
-    id: "f2", projectId: "p1", title: "Feedback 2", from: "example@gmail.com",
-    receivedAt: "2026-04-25 10:30 AM", priority: "low", estimatedTime: "1–2 hours",
-    content: "Lalallalallala here is another feedback that needs fixing asap thank you",
-    summary: "Lalallalallala here is another feedback summary yay", status: "implementing",
-  },
-  {
-    id: "f3", projectId: "p1", title: "Navigation bug fix", from: "client@acme.com",
-    receivedAt: "2026-04-24 02:15 PM", priority: "medium", estimatedTime: "3–5 hours",
-    content: "The navigation bar breaks on mobile when the sidebar is open.",
-    summary: "Mobile nav bar conflicts with sidebar overlay.", status: "staged",
-  },
-  {
-    id: "f4", projectId: "p2", title: "Dark mode toggle", from: "example@gmail.com",
-    receivedAt: "2026-04-25 09:00 AM", priority: "low", estimatedTime: "1 hour",
-    content: "Please add a dark mode toggle to the settings page.",
-    summary: "Add dark mode toggle to settings.", status: "testing",
-  },
-  {
-    id: "f5", projectId: "p3", title: "Performance issue on dashboard", from: "stakeholder@corp.com",
-    receivedAt: "2026-04-25 08:00 AM", priority: "high", estimatedTime: "4–6 hours",
-    content: "Dashboard loads extremely slowly when there are more than 100 items.",
-    summary: "Dashboard pagination or lazy-loading needed.", status: "pending",
-  },
-];
+      <div className={styles.cardMeta}>
+        <div className={styles.metaItem}>
+          <BranchIcon />
+          <span>{project.branch}</span>
+        </div>
+        <div className={styles.metaItem}>
+          <MailIcon />
+          <span>{project.email}</span>
+        </div>
+      </div>
 
-export default function App() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+      {project.feedbackCount > 0 && (
+        <div className={styles.feedbackLine}>
+          <span className={styles.countDot} />
+          <span>{project.feedbackCount} pending</span>
+        </div>
+      )}
+    </button>
+  )
+}
+
+function BranchIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M5 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a4 4 0 0 0-3.9 3.1A1 1 0 0 0 2 14h6a1 1 0 0 0 .9-1.9A4 4 0 0 0 5 9zm6-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+        fill="currentColor"
+        opacity="0.6"
+      />
+      <path d="M11 7v2M5 7v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M11 9a2 2 0 0 1-2 2H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MailIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+      <path d="M2 5.5l6 4 6-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+export default function ProjectsPage() {
+  const [selected, setSelected] = useState<Project | null>(null)
+
+  const feedbackForProject = useMemo(() => {
+    if (!selected) return []
+    return MOCK_FEEDBACK.filter((f) => f.project === selected.name)
+  }, [selected])
+
+  if (selected) {
+    return (
+      <ProjectDetailView
+        project={selected}
+        allProjects={MOCK_PROJECTS}
+        feedback={feedbackForProject}
+        onSelectProject={setSelected}
+        onBackToProjects={() => setSelected(null)}
+      />
+    )
+  }
 
   return (
-    <div className="app-root">
-      {selectedProject ? (
-        <ProjectDetailView
-          project={selectedProject}
-          allProjects={MOCK_PROJECTS}
-          feedback={MOCK_FEEDBACK.filter((f) => f.projectId === selectedProject.id)}
-          onSelectProject={setSelectedProject}
-          onBackToProjects={() => setSelectedProject(null)}
-        />
-      ) : (
-        <ProjectsView projects={MOCK_PROJECTS} onSelectProject={setSelectedProject} />
-      )}
-    </div>
-  );
+    <>
+      <Navbar />
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <h1 className={styles.title}>Your Projects</h1>
+
+          <div className={styles.grid}>
+            {MOCK_PROJECTS.map((p, i) => (
+              <ProjectCard key={p.id} project={p} index={i} onOpen={setSelected} />
+            ))}
+            <button
+              type="button"
+              className={`${styles.card} ${styles.addCard}`}
+              style={{ animationDelay: `${MOCK_PROJECTS.length * 60}ms` }}
+            >
+              <div className={styles.addIcon}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
+              <span>New Project</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </>
+  )
 }

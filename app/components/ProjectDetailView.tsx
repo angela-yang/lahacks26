@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import type { Project, Feedback } from "../page";
+import type { Project, Feedback, FeedbackStatus } from "../lib/data";
 
 interface Props {
   project: Project;
@@ -12,13 +12,26 @@ interface Props {
   onBackToProjects: () => void;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Not Started",
+const STATUS_LABELS: Record<FeedbackStatus, string> = {
+  queued: "Not Started",
   implementing: "Ongoing",
   testing: "Ongoing",
-  staged: "Ongoing",
-  done: "Finished",
+  staging: "Ongoing",
+  deployed: "Finished",
+  rejected: "Rejected",
 };
+
+function feedbackToUiStage(status: FeedbackStatus): "not-started" | "ongoing" | "finished" {
+  if (status === "deployed") return "finished";
+  if (status === "queued" || status === "rejected") return "not-started";
+  return "ongoing";
+}
+
+function statusPillStageClass(status: FeedbackStatus): string {
+  const s = feedbackToUiStage(status);
+  const slug = s === "finished" ? "finished" : s === "not-started" ? "not-started" : "ongoing";
+  return `status-pill stage-${slug}`;
+}
 
 const PRIORITY_COLORS: Record<string, string> = {
   high: "priority-high",
@@ -131,7 +144,7 @@ export default function ProjectDetailView({
                       <span className={`priority-badge ${PRIORITY_COLORS[f.priority]}`}>
                         {f.priority.charAt(0).toUpperCase() + f.priority.slice(1)} Priority
                       </span>
-                      <span className={`status-pill stage-${f.status === "done" ? "finished" : f.status === "pending" ? "not-started" : "ongoing"}`}>
+                      <span className={statusPillStageClass(f.status)}>
                         {STATUS_LABELS[f.status]}
                       </span>
                     </div>
@@ -164,15 +177,15 @@ function BackIcon() {
 }
 
 function FeedbackDetail({ feedback }: { feedback: Feedback }) {
-  const toStage = (value: Feedback["status"]) =>
-    value === "done" ? "finished" : value === "pending" ? "not-started" : "ongoing";
-  const [status, setStatus] = useState<"not-started" | "ongoing" | "finished">(toStage(feedback.status));
+  const [status, setStatus] = useState<"not-started" | "ongoing" | "finished">(
+    feedbackToUiStage(feedback.status)
+  );
 
   const PIPELINE: Array<"not-started" | "ongoing" | "finished"> = ["not-started", "ongoing", "finished"];
   const currentIdx = PIPELINE.indexOf(status);
 
   useEffect(() => {
-    setStatus(toStage(feedback.status));
+    setStatus(feedbackToUiStage(feedback.status));
   }, [feedback]);
 
   const advance = () => {

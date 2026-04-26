@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import type { Project } from "../page";
+import type { Project } from "../lib/data";
 
 interface Props {
   projects: Project[];
