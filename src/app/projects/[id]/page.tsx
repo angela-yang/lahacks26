@@ -7,10 +7,14 @@ import { MOCK_FEEDBACK, MOCK_PROJECTS } from "@/lib/data";
 
 export default function ProjectPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ from?: string | string[] }>;
 }) {
   const { id } = use(params);
+  const resolvedSearchParams = searchParams ? use(searchParams) : undefined;
+  const animateSidebar = resolvedSearchParams?.from === "dashboard";
   const project = MOCK_PROJECTS.find((candidate) => candidate.id === id) ?? null;
 
   if (!project) {
@@ -57,6 +61,7 @@ export default function ProjectPage({
       project={project}
       allProjects={MOCK_PROJECTS}
       feedback={feedback}
+      animateSidebar={animateSidebar}
     />
   );
 }

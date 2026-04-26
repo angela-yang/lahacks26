@@ -429,7 +429,7 @@ export default function DashboardPage() {
                   key={p.id}
                   project={p}
                   index={i}
-                  href={`/projects/${p.id}`}
+                  href={`/projects/${p.id}?from=dashboard`}
                 />
               ))
             ) : (

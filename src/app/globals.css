@@ -555,10 +555,11 @@ textarea {
   position: relative;
   overflow: visible;
   transition: color var(--transition);
-  opacity: 0;
+  opacity: 1;
 }
 
-.mounted .sidebar-project {
+.animate-sidebar .sidebar-project {
+  opacity: 0;
   animation: cardIn var(--spring) forwards;
 }
 

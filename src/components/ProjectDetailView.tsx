@@ -10,6 +10,7 @@ interface Props {
   project: Project;
   allProjects: Project[];
   feedback: Feedback[];
+  animateSidebar?: boolean;
 }
 
 const STATUS_LABELS: Record<FeedbackStatus, string> = {
@@ -50,6 +51,7 @@ export default function ProjectDetailView({
   project,
   allProjects,
   feedback,
+  animateSidebar = false,
 }: Props) {
   const router = useRouter();
   const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(
@@ -70,7 +72,7 @@ export default function ProjectDetailView({
       <Navbar onHomeClick={() => router.push("/dashboard")} />
       <div className="detail-layout">
         {/* Sidebar */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${animateSidebar ? "animate-sidebar" : ""}`}>
           <Link
             href="/dashboard"
             className="back-button sidebar-back-button"
