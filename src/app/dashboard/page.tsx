@@ -35,6 +35,11 @@ function ProjectCard({
   index: number;
   onOpen: (p: Project) => void;
 }) {
+  const nameSize = getAdaptiveTextSize(project.name, 1.15, 0.93);
+  const branchSize = getAdaptiveTextSize(project.branch, 0.98, 0.82);
+  const emailSize = getAdaptiveTextSize(project.email, 0.98, 0.8);
+  const repoSize = getAdaptiveTextSize(project.githubRepo, 0.98, 0.8);
+
   return (
     <button
       type="button"
@@ -45,22 +50,30 @@ function ProjectCard({
       <span className={styles.folderTab} aria-hidden />
       <div className={styles.folderBody}>
         <div className={styles.cardHeader}>
-          <h3 className={styles.cardName}>{project.name}</h3>
+          <h3 className={styles.cardName} style={nameSize ? { fontSize: nameSize } : undefined}>
+            {project.name}
+          </h3>
           <StatusBadge status={project.status} />
         </div>
 
         <div className={styles.cardMeta}>
           <div className={styles.metaItem}>
             <BranchIcon />
-            <span>{project.branch}</span>
+            <span style={branchSize ? { fontSize: branchSize } : undefined}>
+              {project.branch}
+            </span>
           </div>
           <div className={styles.metaItem}>
             <MailIcon />
-            <span>{project.email}</span>
+            <span style={emailSize ? { fontSize: emailSize } : undefined}>
+              {project.email}
+            </span>
           </div>
           <div className={styles.metaItem}>
             <RepoIcon />
-            <span>{project.githubRepo}</span>
+            <span style={repoSize ? { fontSize: repoSize } : undefined}>
+              {project.githubRepo}
+            </span>
           </div>
         </div>
 
@@ -152,15 +165,108 @@ function createProjectId() {
   return `project-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
 }
 
+function getRelativeActivityMinutes(lastActivity: string) {
+  const value = lastActivity.trim().toLowerCase();
+
+  if (value === "just now") return 0;
+
+  const match = value.match(
+    /^(\d+)\s+(min|mins|minute|minutes|hr|hrs|hour|hours|day|days|week|weeks|month|months)\s+ago$/,
+  );
+
+  if (!match) return Number.POSITIVE_INFINITY;
+
+  const amount = Number(match[1]);
+  const unit = match[2];
+
+  const factor: Record<string, number> = {
+    min: 1,
+    mins: 1,
+    minute: 1,
+    minutes: 1,
+    hr: 60,
+    hrs: 60,
+    hour: 60,
+    hours: 60,
+    day: 60 * 24,
+    days: 60 * 24,
+    week: 60 * 24 * 7,
+    weeks: 60 * 24 * 7,
+    month: 60 * 24 * 30,
+    months: 60 * 24 * 30,
+  };
+
+  return amount * factor[unit];
+}
+
+function getAdaptiveTextSize(text: string, base: number, min: number) {
+  const length = text.trim().length;
+
+  if (length <= 22) return undefined;
+
+  const scaled = Math.max(min, base - (length - 22) * 0.017);
+  return `${scaled}rem`;
+}
+
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
   const [selected, setSelected] = useState<Project | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [clientEmail, setClientEmail] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | Project["status"]>("all");
+  const [sortBy, setSortBy] = useState<"recent" | "pending">("recent");
   const [githubRepos, setGithubRepos] = useState<GitHubRepo[]>([]);
   const [githubReposLoading, setGithubReposLoading] = useState(true);
   const [githubReposError, setGithubReposError] = useState<string | null>(null);
   const [selectedRepoFullName, setSelectedRepoFullName] = useState("");
+
+  const visibleProjects = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return projects
+      .map((project, index) => ({ project, index }))
+      .filter(({ project }) => {
+        if (statusFilter !== "all" && project.status !== statusFilter) {
+          return false;
+        }
+
+        if (!query) return true;
+
+        const haystack = [
+          project.name,
+          project.email,
+          project.branch,
+          project.githubRepo,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(query);
+      })
+      .sort((a, b) => {
+        if (sortBy === "pending") {
+          const pendingDelta = b.project.feedbackCount - a.project.feedbackCount;
+          if (pendingDelta !== 0) return pendingDelta;
+
+          const activityDelta =
+            getRelativeActivityMinutes(a.project.lastActivity) -
+            getRelativeActivityMinutes(b.project.lastActivity);
+          if (activityDelta !== 0) return activityDelta;
+        } else {
+          const activityDelta =
+            getRelativeActivityMinutes(a.project.lastActivity) -
+            getRelativeActivityMinutes(b.project.lastActivity);
+          if (activityDelta !== 0) return activityDelta;
+
+          const pendingDelta = b.project.feedbackCount - a.project.feedbackCount;
+          if (pendingDelta !== 0) return pendingDelta;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ project }) => project);
+  }, [projects, searchQuery, sortBy, statusFilter]);
 
   const selectedRepo = useMemo(
     () =>
@@ -297,19 +403,62 @@ export default function DashboardPage() {
         <div className={styles.container}>
           <h1 className={styles.title}>Your Projects</h1>
 
-          <div className={styles.grid}>
-            {projects.map((p, i) => (
-              <ProjectCard
-                key={p.id}
-                project={p}
-                index={i}
-                onOpen={setSelected}
+          <div className={styles.toolbar}>
+            <label className={styles.searchField}>
+              <span>Search</span>
+              <input
+                type="search"
+                placeholder="Search by project, email, branch, or repo"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
               />
-            ))}
+            </label>
+
+            <label className={styles.selectField}>
+              <span>Status</span>
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value as "all" | Project["status"])
+                }
+              >
+                <option value="all">All projects</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </label>
+
+            <label className={styles.selectField}>
+              <span>Sort</span>
+              <select
+                value={sortBy}
+                onChange={(event) =>
+                  setSortBy(event.target.value as "recent" | "pending")
+                }
+              >
+                <option value="recent">Most recent task</option>
+                <option value="pending">Most pending tasks</option>
+              </select>
+            </label>
+          </div>
+
+          <div className={styles.grid}>
+            {visibleProjects.length > 0 ? (
+              visibleProjects.map((p, i) => (
+                <ProjectCard
+                  key={p.id}
+                  project={p}
+                  index={i}
+                  onOpen={setSelected}
+                />
+              ))
+            ) : (
+              <div className={styles.emptyState}>No projects match your search.</div>
+            )}
             <button
               type="button"
               className={`${styles.folderWrap} ${styles.addFolder}`}
-              style={{ animationDelay: `${projects.length * 60}ms` }}
+              style={{ animationDelay: `${visibleProjects.length * 60}ms` }}
               onClick={openCreateModal}
             >
               <span className={styles.folderTab} aria-hidden />

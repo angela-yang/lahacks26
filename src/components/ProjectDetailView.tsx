@@ -77,7 +77,7 @@ export default function ProjectDetailView({
             onClick={onBackToProjects}
           >
             <BackIcon />
-            <span>Back to Projects</span>
+            <span>Back</span>
           </button>
           {allProjects.map((p, i) => (
             <button

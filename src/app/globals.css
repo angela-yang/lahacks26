@@ -368,6 +368,7 @@ textarea {
 
 .project-card:hover .project-card-tab {
   border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(30, 30, 38, 0.6);
 }
 
 .project-card-inner {
@@ -386,6 +387,8 @@ textarea {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .status-badge {
@@ -422,6 +425,12 @@ textarea {
   font-size: 17px;
   color: var(--text-secondary);
   font-family: var(--font-mono);
+}
+
+.meta-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .feedback-count {
@@ -475,7 +484,7 @@ textarea {
   justify-content: center;
   height: 100%;
   gap: 8px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.94);
   font-size: 1rem;
   min-height: 100px;
 }
@@ -483,13 +492,21 @@ textarea {
 .add-icon {
   font-size: 22px;
   font-weight: 300;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.72);
   line-height: 1;
 }
 
 .add-card:hover .add-icon,
 .add-card:hover .add-inner span {
-  color: var(--accent);
+  color: #fff;
+}
+
+.add-card:hover .project-card-tab {
+  background: rgba(105, 96, 145, 0.46);
+}
+
+.add-card:hover .project-card-inner {
+  color: #fff;
 }
 
 /* ─── Detail Layout ─── */
@@ -511,7 +528,7 @@ textarea {
 
 /* ─── Sidebar ─── */
 .sidebar {
-  width: 210px;
+  width: 160px;
   flex-shrink: 0;
   padding: 8px 16px;
   display: flex;
