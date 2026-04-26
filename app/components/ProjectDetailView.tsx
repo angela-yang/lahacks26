@@ -90,7 +90,7 @@ export default function ProjectDetailView({
               style={{ animationDelay: `${i * 60}ms` }}
               onClick={() => onSelectProject(p)}
             >
-              <div className="sidebar-tab" />
+              <div className="sidebar-tab" aria-hidden="true" />
               <span>{p.name}</span>
             </button>
           ))}
