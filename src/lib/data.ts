@@ -8,6 +8,13 @@ export type FeedbackStatus =
   | "rejected";
 export type ProjectStatus = "active" | "inactive" | "paused";
 
+export interface GitHubRepo {
+  id: string;
+  name: string;
+  fullName: string;
+  private: boolean;
+}
+
 export interface Feedback {
   id: string;
   title: string;
@@ -27,6 +34,7 @@ export interface Project {
   name: string;
   branch: string;
   email: string;
+  githubRepo: string;
   status: ProjectStatus;
   feedbackCount: number;
   lastActivity: string;
@@ -39,6 +47,7 @@ export const MOCK_PROJECTS: Project[] = [
     name: "Project 1",
     branch: "main",
     email: "example@gmail.com",
+    githubRepo: "acme/dashboard-ui",
     status: "active",
     feedbackCount: 3,
     lastActivity: "2 min ago",
@@ -49,6 +58,7 @@ export const MOCK_PROJECTS: Project[] = [
     name: "Project 2",
     branch: "main",
     email: "hello@example.com",
+    githubRepo: "acme/marketing-site",
     status: "active",
     feedbackCount: 1,
     lastActivity: "18 min ago",
@@ -59,6 +69,7 @@ export const MOCK_PROJECTS: Project[] = [
     name: "Project 3",
     branch: "staging",
     email: "noreply@example.com",
+    githubRepo: "acme/admin-portal",
     status: "active",
     feedbackCount: 0,
     lastActivity: "1 hr ago",
@@ -69,6 +80,7 @@ export const MOCK_PROJECTS: Project[] = [
     name: "Project 4",
     branch: "main",
     email: "team@example.com",
+    githubRepo: "acme/design-system",
     status: "inactive",
     feedbackCount: 0,
     lastActivity: "3 days ago",

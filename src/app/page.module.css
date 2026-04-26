@@ -313,3 +313,221 @@
 .addFolder:hover .addIcon {
   color: rgba(48, 36, 88, 0.92);
 }
+
+/* ─── Create Project Modal ─── */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(4, 4, 8, 0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.modalPanel {
+  width: min(100%, 560px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(16, 14, 26, 0.88);
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 24px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.modalEyebrow {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  margin-bottom: 8px;
+}
+
+.modalTitle {
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  letter-spacing: -0.03em;
+}
+
+.modalCloseButton {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.modalDescription {
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.modalForm {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  padding: 14px 16px;
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.field input::placeholder {
+  color: rgba(244, 244, 246, 0.4);
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: rgba(163, 150, 196, 0.55);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(163, 150, 196, 0.14);
+}
+
+.field select:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.modalError {
+  color: var(--red);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.repoPreview {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.repoPreviewLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.repoPreviewValue {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.repoPreviewMeta {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.modalPrimaryButton,
+.modalSecondaryButton {
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.modalSecondaryButton {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.modalPrimaryButton {
+  border: 1px solid rgba(163, 150, 196, 0.35);
+  background: linear-gradient(180deg, rgba(163, 150, 196, 0.22), rgba(109, 93, 158, 0.32));
+  color: #fff;
+}
+
+.modalPrimaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.modalPrimaryButton:hover,
+.modalSecondaryButton:hover,
+.modalCloseButton:hover {
+  transform: translateY(-1px);
+}
+
+.modalPrimaryButton:hover {
+  border-color: rgba(163, 150, 196, 0.55);
+  background: linear-gradient(180deg, rgba(163, 150, 196, 0.28), rgba(109, 93, 158, 0.38));
+}
+
+.modalSecondaryButton:hover,
+.modalCloseButton:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 640px) {
+  .modalPanel {
+    padding: 20px;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
+  }
+
+  .modalPrimaryButton,
+  .modalSecondaryButton {
+    width: 100%;
+  }
+}

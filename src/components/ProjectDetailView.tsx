@@ -159,6 +159,7 @@ export default function ProjectDetailView({
                 <FeedbackDetail
                   key={selectedFeedback.id}
                   feedback={selectedFeedback}
+                  project={project}
                 />
               ) : (
                 <div className="empty-state">Select a feedback item</div>
@@ -191,7 +192,13 @@ function BackIcon() {
   );
 }
 
-function FeedbackDetail({ feedback }: { feedback: Feedback }) {
+function FeedbackDetail({
+  feedback,
+  project,
+}: {
+  feedback: Feedback;
+  project: Project;
+}) {
   const [status, setStatus] = useState<"not-started" | "ongoing" | "finished">(
     feedbackToUiStage(feedback.status),
   );
@@ -232,8 +239,8 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
           <span>Received: {feedback.receivedAt}</span>
         </div>
         <div className="meta-row">
-          <CodeIcon />
-          <span>Project: Clanker</span>
+          <RepoIcon />
+          <span>Repo: {project.githubRepo}</span>
         </div>
       </div>
 
@@ -346,16 +353,24 @@ function CalendarIcon() {
   );
 }
 
-function CodeIcon() {
+function RepoIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+      <rect
+        x="2.5"
+        y="2.5"
+        width="11"
+        height="11"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        opacity="0.6"
+      />
       <path
-        d="M5 6L2 8l3 2M11 6l3 2-3 2M9 4l-2 8"
+        d="M5 6h6M5 8h4M5 10h5"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.6"
       />
     </svg>
   );

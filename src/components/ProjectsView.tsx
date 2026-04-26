@@ -6,9 +6,14 @@ import type { Project } from "../lib/data";
 interface Props {
   projects: Project[];
   onSelectProject: (p: Project) => void;
+  onNewProject?: () => void;
 }
 
-export default function ProjectsView({ projects, onSelectProject }: Props) {
+export default function ProjectsView({
+  projects,
+  onSelectProject,
+  onNewProject,
+}: Props) {
   return (
     <div className="view projects-view mounted">
       <Navbar />
@@ -39,6 +44,10 @@ export default function ProjectsView({ projects, onSelectProject }: Props) {
                     <MailIcon />
                     <span>{project.email}</span>
                   </div>
+                  <div className="meta-row">
+                    <RepoIcon />
+                    <span>{project.githubRepo}</span>
+                  </div>
                 </div>
                 {project.feedbackCount > 0 && (
                   <div className="feedback-count">
@@ -49,7 +58,11 @@ export default function ProjectsView({ projects, onSelectProject }: Props) {
               </div>
             </button>
           ))}
-          <button className="project-card add-card">
+          <button
+            type="button"
+            className="project-card add-card"
+            onClick={onNewProject}
+          >
             <div className="project-card-inner add-inner">
               <div className="add-icon">+</div>
               <span>New Project</span>
@@ -102,6 +115,29 @@ function MailIcon() {
         d="M2 5.5l6 4 6-4"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function RepoIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+      <rect
+        x="2.5"
+        y="2.5"
+        width="11"
+        height="11"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        opacity="0.6"
+      />
+      <path
+        d="M5 6h6M5 8h4M5 10h5"
+        stroke="currentColor"
+        strokeWidth="1.4"
         strokeLinecap="round"
       />
     </svg>
