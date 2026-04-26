@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "./Navbar";
 import type { Project, Feedback, FeedbackStatus } from "../lib/data";
 
@@ -53,38 +53,21 @@ export default function ProjectDetailView({
   onSelectProject,
   onBackToProjects,
 }: Props) {
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(
-    feedback[0] ?? null,
+  const [selectedFeedbackId, setSelectedFeedbackId] = useState<string | null>(
+    feedback[0]?.id ?? null,
   );
   const [statusFilter, setStatusFilter] = useState("All Status");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const filtered =
     statusFilter === "All Status"
       ? feedback
       : feedback.filter((f) => STATUS_LABELS[f.status] === statusFilter);
 
-  useEffect(() => {
-    setSelectedFeedback(feedback[0] ?? null);
-  }, [project.id, feedback]);
-
-  useEffect(() => {
-    if (!selectedFeedback) {
-      setSelectedFeedback(filtered[0] ?? null);
-      return;
-    }
-    const stillVisible = filtered.some((f) => f.id === selectedFeedback.id);
-    if (!stillVisible) {
-      setSelectedFeedback(filtered[0] ?? null);
-    }
-  }, [filtered, selectedFeedback]);
+  const selectedFeedback =
+    filtered.find((f) => f.id === selectedFeedbackId) ?? filtered[0] ?? null;
 
   return (
-    <div className={`view detail-view ${mounted ? "mounted" : ""}`}>
+    <div className="view detail-view mounted">
       <Navbar onHomeClick={onBackToProjects} />
       <div className="detail-layout">
         {/* Sidebar */}
@@ -143,7 +126,7 @@ export default function ProjectDetailView({
                     key={f.id}
                     className={`feedback-item ${selectedFeedback?.id === f.id ? "selected" : ""}`}
                     style={{ animationDelay: `${i * 70}ms` }}
-                    onClick={() => setSelectedFeedback(f)}
+                    onClick={() => setSelectedFeedbackId(f.id)}
                   >
                     <div className="feedback-item-top">
                       <span className="feedback-item-title">{f.title}</span>
@@ -173,7 +156,10 @@ export default function ProjectDetailView({
             {/* Detail Panel */}
             <div className="detail-panel">
               {selectedFeedback ? (
-                <FeedbackDetail feedback={selectedFeedback} />
+                <FeedbackDetail
+                  key={selectedFeedback.id}
+                  feedback={selectedFeedback}
+                />
               ) : (
                 <div className="empty-state">Select a feedback item</div>
               )}
@@ -216,10 +202,6 @@ function FeedbackDetail({ feedback }: { feedback: Feedback }) {
     "finished",
   ];
   const currentIdx = PIPELINE.indexOf(status);
-
-  useEffect(() => {
-    setStatus(feedbackToUiStage(feedback.status));
-  }, [feedback]);
 
   const advance = () => {
     if (currentIdx < PIPELINE.length - 1) {

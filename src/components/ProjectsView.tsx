@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import type { Project } from "../lib/data";
 
@@ -10,14 +9,8 @@ interface Props {
 }
 
 export default function ProjectsView({ projects, onSelectProject }: Props) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
-    <div className={`view projects-view ${mounted ? "mounted" : ""}`}>
+    <div className="view projects-view mounted">
       <Navbar />
       <main className="projects-main">
         <h1 className="section-title">Your Projects</h1>

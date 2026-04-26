@@ -169,6 +169,12 @@ textarea {
   opacity: 1;
 }
 
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .sign-in-btn {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.92);

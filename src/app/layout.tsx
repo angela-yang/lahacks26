@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,10 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="bg-grid" aria-hidden="true" />
-        <div className="bg-glow" aria-hidden="true" />
-        <div className="bg-noise" aria-hidden="true" />
-        {children}
+        <ClerkProvider>
+          <div className="bg-grid" aria-hidden="true" />
+          <div className="bg-glow" aria-hidden="true" />
+          <div className="bg-noise" aria-hidden="true" />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

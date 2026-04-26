@@ -1,7 +1,5 @@
 # To Do
 
-1. Landing page
-2. Authentication w/ Clerk
 3. set up MongoDB .env (ask cursor to create an env example file)
 4. set up MongoDB connection
 5. Create ability to make new projects (frontend + backend)
