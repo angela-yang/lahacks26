@@ -33,32 +33,35 @@ function ProjectCard({
   return (
     <button
       type="button"
-      className={`${styles.card} ${project.status === 'inactive' ? styles.dimmed : ''}`}
+      className={`${styles.folderWrap} ${project.status === 'inactive' ? styles.dimmed : ''}`}
       style={{ animationDelay: `${index * 60}ms` }}
       onClick={() => onOpen(project)}
     >
-      <div className={styles.cardHeader}>
-        <h3 className={styles.cardName}>{project.name}</h3>
-        <StatusBadge status={project.status} />
-      </div>
+      <span className={styles.folderTab} aria-hidden />
+      <div className={styles.folderBody}>
+        <div className={styles.cardHeader}>
+          <h3 className={styles.cardName}>{project.name}</h3>
+          <StatusBadge status={project.status} />
+        </div>
 
-      <div className={styles.cardMeta}>
-        <div className={styles.metaItem}>
-          <BranchIcon />
-          <span>{project.branch}</span>
+        <div className={styles.cardMeta}>
+          <div className={styles.metaItem}>
+            <BranchIcon />
+            <span>{project.branch}</span>
+          </div>
+          <div className={styles.metaItem}>
+            <MailIcon />
+            <span>{project.email}</span>
+          </div>
         </div>
-        <div className={styles.metaItem}>
-          <MailIcon />
-          <span>{project.email}</span>
-        </div>
-      </div>
 
-      {project.feedbackCount > 0 && (
-        <div className={styles.feedbackLine}>
-          <span className={styles.countDot} />
-          <span>{project.feedbackCount} pending</span>
-        </div>
-      )}
+        {project.feedbackCount > 0 && (
+          <div className={styles.feedbackLine}>
+            <span className={styles.countDot} />
+            <span>{project.feedbackCount} pending</span>
+          </div>
+        )}
+      </div>
     </button>
   )
 }
@@ -119,15 +122,18 @@ export default function ProjectsPage() {
             ))}
             <button
               type="button"
-              className={`${styles.card} ${styles.addCard}`}
+              className={`${styles.folderWrap} ${styles.addFolder}`}
               style={{ animationDelay: `${MOCK_PROJECTS.length * 60}ms` }}
             >
-              <div className={styles.addIcon}>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-                  <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+              <span className={styles.folderTab} aria-hidden />
+              <div className={`${styles.folderBody} ${styles.addFolderBody}`}>
+                <div className={styles.addIcon}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <span>New Project</span>
               </div>
-              <span>New Project</span>
             </button>
           </div>
         </div>

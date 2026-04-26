@@ -129,8 +129,6 @@ export default function ProjectDetailView({
                     className={`feedback-item ${selectedFeedback?.id === f.id ? "selected" : ""}`}
                     style={{ animationDelay: `${i * 70}ms` }}
                     onClick={() => setSelectedFeedback(f)}
-                    onMouseEnter={() => setSelectedFeedback(f)}
-                    onFocus={() => setSelectedFeedback(f)}
                   >
                     <div className="feedback-item-top">
                       <span className="feedback-item-title">{f.title}</span>

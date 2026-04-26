@@ -10,7 +10,9 @@ export default function Navbar({ onHomeClick }: NavbarProps) {
       <button className="navbar-logo" onClick={onHomeClick} type="button">
         Clanker
       </button>
-      <button className="sign-in-btn">Sign In</button>
+      <button className="sign-in-btn" type="button">
+        Sign In
+      </button>
     </nav>
   );
 }
